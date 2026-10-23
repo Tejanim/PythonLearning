@@ -1,0 +1,177 @@
+GIT LEARNING NOTES
+==================
+
+Project
+-------
+Folder: C:\Users\sai\Documents\PythonLearning
+GitHub repository: https://github.com/Tejanim/PythonLearning.git
+Main branch: main
+
+1. What Git and GitHub are
+--------------------------
+- Git tracks changes to files and saves checkpoints called commits.
+- GitHub hosts a remote copy of a Git repository online.
+- A local repository is on my computer; a remote repository is online.
+- Git does not automatically commit every file change.
+- Pushing to GitHub does not automatically deploy or run an application.
+  A separate deployment workflow would need to do that.
+
+2. The everyday Git workflow
+----------------------------
+Check the current state:
+    git status
+
+Stage a changed file:
+    git add hello.py
+
+Save a checkpoint (commit):
+    git commit -m "Describe what changed"
+
+Upload local commits to GitHub:
+    git push
+
+Typical sequence after editing a file:
+    git status
+    git add hello.py
+    git commit -m "Update hello.py"
+    git push
+
+What each command means:
+- status: shows changed, staged, and untracked files.
+- add: stages selected changes for the next commit.
+- commit: saves a checkpoint in local Git history.
+- push: sends local commits to the remote repository.
+
+3. Looking at history and changes
+---------------------------------
+Show recent commits in a compact list:
+    git log --oneline
+
+Show details of a commit:
+    git show e6ae21c
+
+Compare current file changes that are not staged:
+    git diff
+
+Read a file exactly as stored in a commit:
+    git show e6ae21c:hello.py
+
+4. Restoring an earlier version
+-------------------------------
+Restore hello.py from an earlier commit:
+    git restore --source=e6ae21c -- hello.py
+
+Restore hello.py from a later commit:
+    git restore --source=ce58269 -- hello.py
+
+Important:
+- Replace the example commit IDs with the ID you want to use.
+- git restore changes the working copy of the file. It does not erase
+  the old commit or rewrite GitHub history by itself.
+- Check `git status` after restoring. If you want to keep the restored
+  version as a new checkpoint, stage, commit, and push it.
+- Be careful: restoring a file can replace your current uncommitted
+  changes to that file.
+
+5. Our example commit history
+-----------------------------
+    ce58269  add one more print statement
+    e6ae21c  Add first Python learning program
+
+The first commit was:
+    e6ae21c
+    Add first Python learning program
+
+The next commit added another print statement:
+    ce58269
+    add one more print statement
+
+`main` points to the latest commit on our main branch. `origin/main`
+is the local reference that tracks the remote branch on GitHub; after a
+successful push, it should match GitHub's main branch.
+
+6. Branches
+-----------
+A branch is a separate line of development in Git history.
+It is not automatically a separate physical folder.
+
+Create and switch to a new branch:
+    git switch -c practice-branch
+
+Switch back to main:
+    git switch main
+
+Commits made on a branch advance that branch. They do not automatically
+change main. To bring work into main, teams commonly use a merge or a
+reviewed GitHub pull request.
+
+If I need two branches checked out in separate folders at the same time,
+I can later learn `git worktree` or use another clone.
+
+7. Inspecting Git internals (optional learning)
+-----------------------------------------------
+Check the type of a Git object:
+    git cat-file -t e6ae21c
+
+Print a commit object:
+    git cat-file -p e6ae21c
+
+Print the file content stored in a commit:
+    git cat-file -p e6ae21c:hello.py
+
+A commit points to a tree (the snapshot's directory/file structure).
+A tree points to blobs, which store file contents. Git also stores
+metadata such as the commit message, author, committer, and parent commit.
+
+To inspect the tree from our example commit, we saw this tree ID:
+    1247513f26f4960e45cbd8b27a68a9b7a8f147d0
+
+You can inspect it with:
+    git cat-file -p 1247513f26f4960e45cbd8b27a68a9b7a8f147d0
+
+The output will show the tree's entries and their object IDs.
+
+8. Git and APIs are different
+-----------------------------
+- Git commands manage code history and synchronize repositories.
+- APIs let one program communicate with another program/service.
+- For example, `git push` sends commits to GitHub, while Python code
+  using `requests.get(...)` can send an HTTP request to an API.
+- Related ideas include local vs remote systems and troubleshooting,
+  but Git commands are not API commands.
+
+API topics to learn later:
+- HTTP methods: GET, POST, PUT, DELETE
+- JSON data
+- Authentication: API keys and tokens
+- Status codes such as 200, 401, 404, and 500
+- Error handling
+
+9. Git safety reminders
+-----------------------
+- `git status` is a good first command when unsure what is happening.
+- Read a command before running it, especially commands that delete,
+  overwrite, reset, or rewrite history.
+- `git restore` can overwrite local changes in the selected file.
+- `git revert <commit-id>` creates a new commit that undoes a prior
+  commit's changes; it is often safer for shared history than rewriting it.
+- `git switch --detach <commit-id>` checks out a specific commit for
+  inspection. It does not deploy or publish anything by itself.
+- Keep unrelated projects in their own repositories. Our current
+  PythonLearning repository is separate from the Harjeevan project.
+
+10. Where to continue
+---------------------
+Keep practising Git as I learn Python:
+1. Edit hello.py.
+2. Run it with `py hello.py`.
+3. Check changes with `git status` and `git diff`.
+4. Stage, commit, and push the change.
+5. Then continue learning Python fundamentals and later practise calling
+   APIs from Python.
+
+Current Python command on this computer:
+    py hello.py
+
+Note: `py` works on this computer; the `python` command may open the
+Microsoft Store alias, so use `py` for now.
